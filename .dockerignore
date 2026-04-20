@@ -1,0 +1,16 @@
+# VCS and local state
+.git
+.github
+.gitignore
+.gitattributes
+
+# Docs — not needed in the image
+README.md
+CHANGELOG.md
+*.md
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store

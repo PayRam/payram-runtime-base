@@ -1,0 +1,74 @@
+# payram-runtime-base
+
+Runtime base image used by [`payram-core`](https://github.com/PayRam/payram-core) as the `FROM` for the final runtime stage.
+
+The image contains the set of system packages every PayRam deployment needs — PostgreSQL, Redis, Supervisor, Node.js, and a few small utilities — all pinned to a known combination. Pre-building this image means the main `payram-core` Docker build doesn't have to reinstall these on every CI run, saving 1–2 minutes per build.
+
+## What's inside
+
+| Component | Version | Source |
+|---|---|---|
+| Debian | stable-slim | Docker Hub |
+| PostgreSQL | 17 | `apt.postgresql.org` official repo |
+| Redis | (debian stable) | apt |
+| Supervisor | (debian stable) | apt |
+| Node.js / npm | (debian stable) | apt |
+
+Nothing proprietary — this image is deliberately public so anyone can inspect, reproduce, or pull without authentication.
+
+## Pulling the image
+
+```bash
+docker pull ghcr.io/payram/runtime-base:v1
+```
+
+Tag conventions:
+- `vX.Y.Z` — exact version (e.g., `v1.0.0`).
+- `vX` — floating tag for the latest in the major series (e.g., `v1` → currently `v1.0.0`, later may move to `v1.1.0`).
+- `latest` — most recently pushed tag.
+
+`payram-core` should reference the **major** tag (`v1`) so it picks up patch/minor updates automatically. Only bump to `v2`, `v3`, etc., when you make a breaking change (e.g., PostgreSQL major-version upgrade).
+
+## Using it from payram-core
+
+In `payram-core/Dockerfile`:
+
+```dockerfile
+FROM ghcr.io/payram/runtime-base:v1 as base
+```
+
+That single line replaces the ~25 lines of apt-install work in the old base stage.
+
+## Releasing a new version
+
+1. Edit `Dockerfile` with the desired changes (e.g., bumping a package).
+2. Update `CHANGELOG.md` with a one-line entry.
+3. Commit to `main`.
+4. Tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+5. GitHub Actions builds the image for `linux/amd64` and `linux/arm64`, then pushes it to GHCR under three tags: exact version, major, and `latest`.
+
+### Versioning guidance
+
+- **Patch (`v1.0.0` → `v1.0.1`)**: CVE fix, same software versions.
+- **Minor (`v1.0.0` → `v1.1.0`)**: add or upgrade a minor component.
+- **Major (`v1.0.0` → `v2.0.0`)**: breaking change — something `payram-core` must opt into (e.g., PostgreSQL 17 → 18).
+
+## Manual build (for local testing)
+
+```bash
+docker buildx build \
+  --platform linux/amd64 \
+  -t ghcr.io/payram/runtime-base:local-test \
+  --load \
+  .
+```
+
+## Package visibility
+
+The image package lives at <https://github.com/orgs/PayRam/packages/container/package/runtime-base>.
+
+On first push, GHCR packages default to private. Flip it to public once, under **Package settings → Danger Zone → Change visibility**.
+
+## License
+
+MIT — the image is a thin wrapper around upstream open-source components. See each underlying project for their own licenses.
