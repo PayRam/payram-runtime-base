@@ -12,7 +12,7 @@ The image contains the set of system packages every PayRam deployment needs — 
 | PostgreSQL | 17 | `apt.postgresql.org` official repo |
 | Redis | (debian stable) | apt |
 | Supervisor | (debian stable) | apt |
-| Node.js / npm | (debian stable) | apt |
+| Node.js / npm | 24.22.1 (LTS) | official `node:24.22.1-trixie-slim` image |
 
 Nothing proprietary — this image is deliberately public so anyone can inspect, reproduce, or pull without authentication.
 
