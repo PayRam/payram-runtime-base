@@ -61,10 +61,18 @@ Components: main
 Signed-By: /usr/share/keyrings/redis.asc
 EOF
 
+# PayRam keeps its database in its own data directory (startup.sh), so the
+# package's default cluster in /var/lib/postgresql/17/main is never used.
+COPY <<EOF /etc/postgresql-common/createcluster.d/payram.conf
+create_main_cluster = false
+EOF
+
 # `upgrade` brings the packages already in debian:trixie-slim up to date with
 # Debian's security fixes, not only the ones installed here. The vendor
 # repositories need ca-certificates for HTTPS, so it is installed first, with
-# them switched off.
+# them switched off. wget is not used by the image itself: setup_payram.sh and
+# the updater's installer check health with `docker exec payram wget`, and the
+# copies already on merchants' servers expect it.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     mv /etc/apt/sources.list.d/vendors.sources /tmp/ && \
@@ -76,13 +84,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends \
         libatomic1 libstdc++6 \
         supervisor \
+        wget \
         nginx \
         gettext-base \
         redis-server \
         postgresql-17 && \
     # Redis's package loads its search, JSON, time-series and bloom-filter
     # modules. PayRam uses Redis as a plain cache, so they stay off: less
-    # memory, less code listening.
+    # memory, less code listening. (Vector sets are built into Redis 8 and
+    # always listed by MODULE LIST.)
     sed -i 's/^loadmodule /# loadmodule /' /etc/redis/redis.conf
 
 # The Node.js binary needs libatomic1 and libstdc++6, installed above.

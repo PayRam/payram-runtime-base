@@ -13,7 +13,7 @@ The image contains the set of system packages every PayRam deployment needs — 
 | PostgreSQL | 17 (latest minor) | `apt.postgresql.org` |
 | Redis | latest release (modules off) | `packages.redis.io` |
 | nginx | latest stable | `nginx.org` |
-| Supervisor, gettext-base | Debian 13 | apt |
+| Supervisor, gettext-base, wget | Debian 13 | apt |
 
 Repository signing keys are pinned by checksum in the Dockerfile; a key
 change fails the build until the new key is checked and its checksum
