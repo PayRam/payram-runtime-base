@@ -9,7 +9,7 @@ The image contains the set of system packages every PayRam deployment needs — 
 | Component | Version | Source |
 |---|---|---|
 | Debian | 13 (trixie), current point release | `debian:trixie-slim` + `apt-get upgrade` |
-| Node.js / npm | 26.12.1 (LTS line) | official `node:26.12.1-trixie-slim` image |
+| Node.js / npm | 26.12.1 (LTS from 28 Oct 2026) | official `node:26.12.1-trixie-slim` image |
 | PostgreSQL | 17 (latest minor) | `apt.postgresql.org` |
 | Redis | latest release (modules off) | `packages.redis.io` |
 | nginx | latest stable | `nginx.org` |

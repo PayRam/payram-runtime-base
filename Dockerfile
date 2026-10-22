@@ -15,7 +15,8 @@
 # them only from a new image.
 
 # Node.js comes from the official image, pinned to an exact release of the
-# current LTS line. Debian stable ships Node.js 20, past its end of life.
+# 26 line, which becomes LTS on 28 October 2026 (24 is in maintenance from
+# 20 October). Debian stable ships Node.js 20, past its end of life.
 FROM node:26.12.1-trixie-slim AS node
 
 # Debian 13 by name: `stable` would jump to the next Debian release on its
