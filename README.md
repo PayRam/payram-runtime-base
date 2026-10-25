@@ -8,33 +8,39 @@ The image contains the set of system packages every PayRam deployment needs — 
 
 | Component | Version | Source |
 |---|---|---|
-| Debian | stable-slim | Docker Hub |
-| PostgreSQL | 17 | `apt.postgresql.org` official repo |
-| Redis | (debian stable) | apt |
-| Supervisor | (debian stable) | apt |
-| Node.js / npm | (debian stable) | apt |
+| Debian | 13 (trixie), current point release | `debian:trixie-slim` + `apt-get upgrade` |
+| Node.js | 26.12.1 (LTS from 28 Oct 2026) | official `node:26.12.1-trixie-slim` image |
+| npm | 11.20.0 (comes with Node.js 26.12.1) | same image |
+| PostgreSQL | 17 (latest minor) | `apt.postgresql.org` |
+| Redis | latest release (modules off) | `packages.redis.io` |
+| nginx | latest stable | `nginx.org` |
+| Supervisor, gettext-base, wget | Debian 13 | apt |
+
+Repository signing keys are pinned by checksum in the Dockerfile; a key
+change fails the build until the new key is checked and its checksum
+updated.
 
 Nothing proprietary — this image is deliberately public so anyone can inspect, reproduce, or pull without authentication.
 
 ## Pulling the image
 
 ```bash
-docker pull ghcr.io/payram/runtime-base:v1
+docker pull ghcr.io/payram/runtime-base:v2
 ```
 
 Tag conventions:
-- `vX.Y.Z` — exact version (e.g., `v1.0.0`).
-- `vX` — floating tag for the latest in the major series (e.g., `v1` → currently `v1.0.0`, later may move to `v1.1.0`).
+- `vX.Y.Z` — exact version (e.g., `v2.0.0`).
+- `vX` — floating tag for the latest in the major series (e.g., `v2` → `v2.0.0`, later `v2.1.0`).
 - `latest` — most recently pushed tag.
 
-`payram-core` should reference the **major** tag (`v1`) so it picks up patch/minor updates automatically. Only bump to `v2`, `v3`, etc., when you make a breaking change (e.g., PostgreSQL major-version upgrade).
+`payram-core` should reference the **major** tag (`v2`) so it picks up patch/minor updates automatically. Only bump to `v3`, `v4`, etc., when you make a breaking change (e.g., PostgreSQL major-version upgrade).
 
 ## Using it from payram-core
 
 In `payram-core/Dockerfile`:
 
 ```dockerfile
-FROM ghcr.io/payram/runtime-base:v1 as base
+FROM ghcr.io/payram/runtime-base:v2 as base
 ```
 
 That single line replaces the ~25 lines of apt-install work in the old base stage.
