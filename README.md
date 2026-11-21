@@ -9,11 +9,11 @@ The image contains the set of system packages every PayRam deployment needs — 
 | Component | Version | Source |
 |---|---|---|
 | Debian | 13 (trixie), current point release | `debian:trixie-slim` + `apt-get upgrade` |
-| Node.js | 26.12.1 (LTS from 28 Oct 2026) | official `node:26.12.1-trixie-slim` image |
-| npm | 11.20.0 (comes with Node.js 26.12.1) | same image |
+| Node.js | 26.13.1 (LTS from 28 Oct 2026) | official `node:26.13.1-trixie-slim` image |
+| npm | 11.20.0 (comes with Node.js 26.13.1) | same image |
 | PostgreSQL | 17 (latest minor) | `apt.postgresql.org` |
 | Redis | latest release (modules off) | `packages.redis.io` |
-| nginx | latest stable | `nginx.org` |
+| nginx | 1.30.7 (pinned) | `nginx.org` |
 | Supervisor, gettext-base, wget | Debian 13 | apt |
 
 Repository signing keys are pinned by checksum in the Dockerfile; a key
